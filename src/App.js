@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div className='container mx-auto pt-3'>
-      <h1>Template editor</h1>
+      <h1>JSON Inspector</h1>
       <div className='row mb-2'>
         <textarea onChange={(e) => {
           setData(e.target.value);
