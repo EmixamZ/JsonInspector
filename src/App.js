@@ -1,15 +1,15 @@
-import logo from './logo.svg';
+
 import './App.css';
 import { useEffect, useState } from 'react';
 import _ from "lodash"
 
 function App() {
-  const supportedLanguage = ['fr', 'en', 'nl']
+  
   const [data, setData] = useState();
   const [props, setProps] = useState([]);
   function compileJson() {
 
-    const or = GetPropArray(data);
+    const or = GetPropArray(JSON.parse(data));
     setProps(or);
   }
 
@@ -18,7 +18,7 @@ function App() {
       <h1>Template editor</h1>
       <div className='row mb-2'>
         <textarea onChange={(e) => {
-          setData(JSON.parse(e.target.value));
+          setData(e.target.value);
           // e.target.style.height = 'inherit';
           // e.target.style.height = `${e.target.scrollHeight}px`;
         }}></textarea>
