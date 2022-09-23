@@ -1,7 +1,7 @@
 
+import _ from "lodash";
+import { useState } from 'react';
 import './App.css';
-import { useEffect, useState } from 'react';
-import _ from "lodash"
 
 function App() {
   
@@ -58,7 +58,7 @@ function GetPropArray(data, parentName = '') {
   const propArray = [];
   const keys = Object.keys(data);
   for (let key of keys) {
-    const defKey = parentName == '' ? key : parentName + '.' + key;
+    const defKey = parentName === '' ? key : parentName + '.' + key;
     if (typeof data[key] == 'object' && !Array.isArray(data[key])) {
       if (data[key]) {
         propArray.push(...GetPropArray(data[key], defKey));
