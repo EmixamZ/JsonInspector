@@ -1,15 +1,17 @@
 
 import _ from "lodash";
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
 
 function App() {
-  
+  const jsonRef = useRef();
   const [data, setData] = useState();
   const [props, setProps] = useState([]);
   function compileJson() {
-
-    const or = GetPropArray(JSON.parse(data));
+    const json = jsonRef.current.value;
+    const jsonObject = JSON.parse(json);
+    setData(jsonObject)
+    const or = GetPropArray(jsonObject);
     setProps(or);
   }
 
@@ -17,19 +19,15 @@ function App() {
     <div className='container mx-auto pt-3'>
       <h1>JSON Inspector</h1>
       <div className='row mb-2'>
-        <textarea onChange={(e) => {
-          setData(e.target.value);
-          // e.target.style.height = 'inherit';
-          // e.target.style.height = `${e.target.scrollHeight}px`;
-        }}></textarea>
+        <textarea ref={jsonRef}></textarea>
       </div>
 
       <button onClick={compileJson} className='btn btn-primary'>Compile</button>
 
       {props.map(prop => (
-        <>
+        <div key={prop}>
           <hr />
-          <div key={prop} className='form-group my-1'>
+          <div className='form-group my-1'>
             <label>{prop}</label>
             <input defaultValue={_.get(data, prop)} onChange={(e) => {
               console.log(e.target.value);
@@ -37,7 +35,7 @@ function App() {
               setData(data);
             }} className='form-control mt-1'></input>
           </div>
-        </>
+        </div>
       ))}
 
       {props.length > 0 ? <button onClick={() => {
@@ -63,29 +61,15 @@ function GetPropArray(data, parentName = '') {
       if (data[key]) {
         propArray.push(...GetPropArray(data[key], defKey));
       }
-      else{
+      else {
         propArray.push(defKey);
       }
     }
-    else if (defKey === 'configurations.feedbackQuestions') {
-      const questionArr = _.get(data, "feedbackQuestions");
-      console.log(data, defKey, questionArr);
+    else if (Array.isArray(data[key])) {
+      const questionArr = _.get(data, key);
+      console.log(defKey);
       questionArr.forEach((q, i) => {
-        propArray.push(...GetPropArray(q, `configurations.feedbackQuestions[${i}]`))
-      })
-    }
-    else if (defKey === 'configurations.extraQuestions') {
-      const questionArr = _.get(data, "extraQuestions");
-      console.log(data, defKey, questionArr);
-      questionArr.forEach((q, i) => {
-        propArray.push(...GetPropArray(q, `configurations.extraQuestions[${i}]`))
-      })
-    }
-    else if (defKey === 'configurations.thankYouMessages') {
-      const questionArr = _.get(data, "thankYouMessages");
-      console.log(data, defKey, questionArr);
-      questionArr.forEach((q, i) => {
-        propArray.push(...GetPropArray(q, `configurations.thankYouMessages[${i}]`))
+        propArray.push(...GetPropArray(q, `${defKey}[${i}]`))
       })
     }
     else {
